@@ -1,176 +1,185 @@
-<!DOCTYPE html>
+Entendido, vamos a arreglarlo paso a paso. Los problemas más comunes por los que "no se ve ningún fondo" son:
+
+Las imágenes (1.png y 2.png) no están en la misma carpeta que el archivo index.html
+Los nombres de archivo no coinciden exactamente (mayúsculas/minúsculas, extensión .PNG vs .png)
+El navegador bloquea la carga local de imágenes por políticas de seguridad (muy común en Chrome si abres directamente con file://)
+
+Soluciones rápidas para probar YA
+
+Verifica la estructura de carpetas
+Debe quedar exactamente así:textcarpeta/
+├── index.html          ← el código que te paso abajo
+├── 1.png               ← fondo inicial (el parque sin carta)
+├── 2.png               ← fondo final (con la carta/texto ya dibujado en la imagen)
+├── blanco.png
+└── negro.png
+Código corregido y simplificado (con fecha visible solo en 2.png)
+He quitado el overlay de texto (para que solo dependa de tus imágenes) y he asegurado que los fondos se carguen bien. Copia este código completo en index.html:
+
+HTML<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <title>Feliz 19 mi princesa 🤍</title>
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="mobile-web-app-capable" content="yes">
   <style>
-    * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-    html, body { height:100%; width:100%; overflow:hidden; background:#f5f2e9; font-family:system-ui,sans-serif; touch-action:none; }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html, body { height:100%; width:100%; overflow:hidden; touch-action:none; background:#f8f4ed; font-family:system-ui,sans-serif; }
 
-    .container { width:100vw; height:100vh; position:relative; overflow:hidden; }
+    .container { 
+      width:100vw; height:100vh; position:relative; overflow:hidden; 
+    }
 
-    #background { position:absolute; inset:0; background-size:cover; background-position:center; background-repeat:no-repeat; transition:opacity 1.4s ease; }
+    #bg {
+      position:absolute; inset:0;
+      background-size:cover; background-position:center; background-repeat:no-repeat;
+      transition:opacity 1.6s ease;
+      will-change:opacity;
+    }
     #bg1 { background-image:url('1.png'); opacity:1; z-index:1; }
     #bg2 { background-image:url('2.png'); opacity:0; z-index:2; }
 
-    #game { position:absolute; inset:0; z-index:10; pointer-events:none; }
+    #game {
+      position:absolute; inset:0; z-index:5;
+      pointer-events:none;
+    }
     #game > * { pointer-events:auto; }
 
-    .character { 
-      position:absolute; 
-      width:70px;          /* ← ajusta según tamaño real de tus PNG */
-      height:110px; 
-      background-size:contain; 
-      background-repeat:no-repeat; 
-      background-position:center bottom; 
-      will-change:transform; 
+    .muneco {
+      position:absolute;
+      width:80px;           /* ← cámbialo si tus PNG son muy grandes/pequeños */
+      height:120px;
+      background-size:contain;
+      background-repeat:no-repeat;
+      background-position:center bottom;
+      image-rendering:crisp-edges;
     }
-    #player { background-image:url('blanco.png'); }
-    #target { background-image:url('negro.png'); }
-
-    #carta {
-      position:absolute; inset:0; 
-      opacity:0; transition:opacity 2s ease; 
-      pointer-events:none; z-index:15;
-      display:flex; justify-content:center; align-items:center;
-      background:rgba(250,245,235,0.82); backdrop-filter:blur(10px);
-    }
-    #carta.visible { opacity:1; pointer-events:auto; }
-
-    .texto-carta {
-      max-width:92%; max-height:88vh; overflow-y:auto; padding:20px 15px;
-      color:#3c2410; font-size:clamp(1.05rem, 3.4vw, 1.65rem); line-height:1.55;
-      text-align:justify; font-weight:350; letter-spacing:0.3px;
-    }
-    .texto-carta::-webkit-scrollbar { width:7px; }
-    .texto-carta::-webkit-scrollbar-thumb { background:#a68a6e; border-radius:4px; }
+    #blanco { background-image:url('blanco.png'); }
+    #negro  { background-image:url('negro.png'); }
 
     #joystick {
-      position:absolute; bottom:16%; left:10%; width:150px; height:150px;
-      border-radius:50%; background:rgba(100,80,60,0.09); border:1px solid rgba(100,80,60,0.18);
-      z-index:30; touch-action:none; display:none;
+      position:absolute; bottom:15%; left:8%; 
+      width:160px; height:160px; border-radius:50%;
+      background:rgba(90,70,50,0.1); border:1px solid rgba(90,70,50,0.25);
+      z-index:20; touch-action:none; display:none;
     }
     #knob {
-      position:absolute; width:65px; height:65px; background:rgba(100,80,60,0.45);
+      position:absolute; width:70px; height:70px; background:rgba(90,70,50,0.5);
       border-radius:50%; transform:translate(-50%,-50%); pointer-events:none;
     }
 
-    @media (max-width:1024px) and (orientation:portrait) {
+    @media (max-width:1000px) and (orientation:portrait) {
       body::before {
-        content:"Gira el móvil a horizontal por favor";
-        position:fixed; inset:0; background:rgba(0,0,0,0.9); color:white;
-        font-size:6vw; display:flex; align-items:center; justify-content:center; text-align:center; z-index:9999;
+        content:"Gira el móvil → horizontal";
+        position:fixed; inset:0; background:rgba(0,0,0,0.88);
+        color:#fff; font-size:5.5vw; display:flex; align-items:center; justify-content:center;
+        text-align:center; z-index:999;
       }
     }
-    @media (max-width:1024px) { #joystick { display:block; } }
+    @media (max-width:1000px) { #joystick { display:block; } }
   </style>
 </head>
 <body>
 
 <div class="container">
-  <div id="background">
+  <div id="bg">
     <div id="bg1"></div>
     <div id="bg2"></div>
   </div>
 
   <div id="game">
-    <div id="player" class="character"></div>
-    <div id="target" class="character"></div>
-
-    <div id="carta">
-      <div class="texto-carta">
-        feliz 19 mi princesa, ya es 1 añito y 1 mes juntitos, y de verdad que esto no puede ser más bonito, quiero agradecerte a ti el que estés hoy aquí, un día más a mi lado, aparte de a la vida por permitirme estar otro día más aquí, ya es más de 1 añito miniña, y quiero darte las gracias por todo, porque siempre has hecho tanto miniña, gracias por ser tan especial como siempre lo has sido, gracias por ser atenta y por escucharme cuando a veces ni yo me entendía, gracias por entenderme, por tu forma y tu manera de querer, por poner tu confianza en mí, por no dar las cosas por perdidas, por seguir luchando en el nombre de ambos, por hacerme cada día el hombre más feliz del mundo, por quitarme miedos, por apoyarme a ser cada día una mejor persona, por llevarme siempre por el buen camino, por ser como eres conmigo, por quererme e incluirme en tu vida, por ser tu mor. no me imagino un día sin ti, sin esos morritos, esas sonrisas tuyas, esa nariz chiquitita y esa mirada que me trae loco, eres más que hermosa, eres una perfección hija de puta, no puedo estar más feliz de haberme quedado a tu lado, porque no te has merecido nunca menos, lo quiero todito contigo vida mía, eres el oxígeno de mi vida, y no sé qué haría sin el oxígeno. gracias de corazón por tus palabras cuando más apoyo o cariño necesito, por tus gestos que llenan mi corazón con todo tu cariño, por tu cariño incondicional, por tu tiempo, y por todo lo increíble que eres, no dejes nunca de luchar, confío en ti y sé que se nos va a dar todito lo que buscamos ambos, siempre orgulloso de ti vida mía, no puedo estar más agradecido con la vida por enviar ese mensaje ese 19 de enero, no tienes defectos vida mía, no creo que exista otra palabra que describa más perfectamente la perfección que tu propio nombre, laura, l a u r a, l de la mejor, porque eres de lo mejorcito que hay vida mía, a de asombrosa, porque no puedo pensar en nadie más al decir esa palabra, u de única, porque como miniña nunca va a haber otra igual, tan pura, tan bonita, tan hermosa, r de reliquia, porque eres muy difícil de encontrar pero cuando te tienen es algo hermoso y otra a de ambiciosa, porque miniña nunca se ha rendido, siempre me demuestra cada día lo increíble, lo fuerte y lo valiente que es, no veo malas palabras hacia ti, porque de verdad, te quiero, te amo mor, y no eres menos en mi vida. sé que no soy perfecto pero siempre trataré de dar el 200% por ti miamor, porque lo quiero todo contigo y haré siempre hasta lo imposible para que así siempre sea, no te voy a tratar mal, menos a obligarte a hacer cosas que no, quiero que puedas fluir, sentirte la princesa que eres, que puedas notar ese amor que te tienes más que merecido cada día, con esa carita hermosa, esos labios bonitos, esa nariz, esa miradita y ese corazón tan puro, a veces me siento contigo en una nube, es una sensación tan cariñosa, eres mi hogar, siempre antes de dormir pienso en la gran suerte que tengo de poder tenerte aquí, porque lo eres todo, lo vales todo, no quiero a otra puta, me quiero despertar siempre con mi blanquita a mi lado, quiero poder estar en tus risas, en tus rayadas para sobreexplicarte las cosas, en tus problemas para que sepas lo que es de verdad un apoyo, en tus desgracias para protegerte de ellas y cuidarte de todo mal, quiero ser el que siempre esté ahí cuidando tu corazón, aunque tengas miedo, aunque te hayan pasado mil y un cosas, todo eso no va a dejar de verte o amarte como lo hago mi reina, nunca dejes de ser tan increíble, tan cariñosa, tan tú. no prometo locuras, pero sí que lo quiero todo contigo, que vas a tener la culpa de que me gaste 500 euros al mes en flores y en que vas a ser la primera palabra que se impregne en mi piel a través de una tinta, espero que sigas siendo como tú eres, que yo no pienso dejar de amarte. admirarte, quererte y apoyarte. por todito y por mucho más, pero siempre a tu lado, te amo millones pequeña y feliz 19 a mi osita, no sé qué haría sin ti, eres mi luz, mi motor, lo eres todito para mí pequeñita, bien feliz te digo esto y con miles de ganas de verte y darte ese abrazo, gracias por tanto mi reina, te amo con todo lo que soy🤍
-      </div>
-    </div>
+    <div id="blanco" class="muneco"></div>
+    <div id="negro"  class="muneco"></div>
 
     <div id="joystick"><div id="knob"></div></div>
   </div>
 </div>
 
 <script>
-  const bg1 = document.getElementById('bg1');
-  const bg2 = document.getElementById('bg2');
-  const player = document.getElementById('player');
-  const target = document.getElementById('target');
-  const carta = document.getElementById('carta');
-  const joystick = document.getElementById('joystick');
-  const knob = document.getElementById('knob');
+  const bg1   = document.getElementById('bg1');
+  const bg2   = document.getElementById('bg2');
+  const blanco = document.getElementById('blanco');
+  const negro  = document.getElementById('negro');
+  const joy    = document.getElementById('joystick');
+  const knob   = document.getElementById('knob');
 
-  let px = window.innerWidth * 0.28;
-  let py = window.innerHeight * 0.55;
-  const speed = 4.5;
+  let x = window.innerWidth * 0.25;
+  let y = window.innerHeight * 0.6;
+  const velocidad = 5;
 
   let tx = Math.random() * (window.innerWidth * 0.6) + window.innerWidth * 0.2;
-  let ty = Math.random() * (window.innerHeight * 0.55) + window.innerHeight * 0.15;
+  let ty = Math.random() * (window.innerHeight * 0.6) + window.innerHeight * 0.15;
 
-  player.style.left = px + 'px'; player.style.top = py + 'px';
-  target.style.left = tx + 'px'; target.style.top = ty + 'px';
+  blanco.style.left = x + 'px'; blanco.style.top = y + 'px';
+  negro.style.left  = tx + 'px'; negro.style.top  = ty + 'px';
 
-  const keys = {};
-  window.addEventListener('keydown', e=>keys[e.key.toLowerCase()]=true);
-  window.addEventListener('keyup', e=>keys[e.key.toLowerCase()]=false);
+  const teclas = {};
+  window.addEventListener('keydown', e => teclas[e.key.toLowerCase()] = true);
+  window.addEventListener('keyup',   e => teclas[e.key.toLowerCase()] = false);
 
-  let touchId = null, centerX, centerY, moveX=0, moveY=0;
+  let touchId = null, cx, cy, mx=0, my=0;
 
-  joystick.addEventListener('touchstart', e=>{e.preventDefault(); if(touchId===null){touchId=e.changedTouches[0].identifier; updateJoy(e.changedTouches[0]);}});
-  joystick.addEventListener('touchmove', e=>{e.preventDefault(); for(let t of e.changedTouches)if(t.identifier===touchId)updateJoy(t);});
-  joystick.addEventListener('touchend', e=>{e.preventDefault(); for(let t of e.changedTouches)if(t.identifier===touchId)resetJoy();});
+  joy.addEventListener('touchstart', e => { e.preventDefault(); if(!touchId) { touchId = e.changedTouches[0].identifier; actJoy(e.changedTouches[0]); } });
+  joy.addEventListener('touchmove',  e => { e.preventDefault(); for(let t of e.changedTouches) if(t.identifier===touchId) actJoy(t); });
+  joy.addEventListener('touchend',   e => { e.preventDefault(); for(let t of e.changedTouches) if(t.identifier===touchId) resetJoy(); });
 
-  function updateJoy(t){
-    if(!centerX){const r=joystick.getBoundingClientRect(); centerX=r.left+r.width/2; centerY=r.top+r.height/2;}
-    let dx=t.clientX-centerX, dy=t.clientY-centerY;
-    const d=Math.hypot(dx,dy), md=65; if(d>md){dx*=md/d; dy*=md/d;}
-    knob.style.left=`${centerX+dx}px`; knob.style.top=`${centerY+dy}px`;
-    moveX=dx/md; moveY=dy/md;
+  function actJoy(t) {
+    if(!cx) { const r=joy.getBoundingClientRect(); cx=r.left+r.width/2; cy=r.top+r.height/2; }
+    let dx = t.clientX - cx, dy = t.clientY - cy;
+    const dist = Math.hypot(dx, dy), maxd=70;
+    if(dist > maxd) { dx *= maxd/dist; dy *= maxd/dist; }
+    knob.style.left = (cx + dx) + 'px';
+    knob.style.top  = (cy + dy) + 'px';
+    mx = dx / maxd; my = dy / maxd;
   }
-  function resetJoy(){ touchId=null; moveX=moveY=0; knob.style.left='50%'; knob.style.top='50%'; }
 
-  let activated = false;
+  function resetJoy() { touchId=null; mx=my=0; knob.style.left='50%'; knob.style.top='50%'; }
 
-  function loop(){
+  let unidos = false;
+
+  function animar() {
     let dx=0, dy=0;
-    if(keys['w']||keys['arrowup']) dy-=1;
-    if(keys['s']||keys['arrowdown']) dy+=1;
-    if(keys['a']||keys['arrowleft']) dx-=1;
-    if(keys['d']||keys['arrowright']) dx+=1;
 
-    if(moveX||moveY){ dx=moveX; dy=moveY; }
+    if(teclas['w'] || teclas['arrowup'])    dy -=1;
+    if(teclas['s'] || teclas['arrowdown'])  dy +=1;
+    if(teclas['a'] || teclas['arrowleft'])  dx -=1;
+    if(teclas['d'] || teclas['arrowright']) dx +=1;
 
-    if(dx||dy){
-      const m = Math.hypot(dx,dy);
-      if(m>0){
-        px += (dx/m) * speed * Math.max(0.35, m) * 1.4;
-        py += (dy/m) * speed * Math.max(0.35, m) * 1.4;
+    if(mx || my) { dx=mx; dy=my; }
+
+    if(dx || dy) {
+      const mag = Math.hypot(dx, dy);
+      if(mag > 0) {
+        x += (dx/mag) * velocidad * Math.max(mag, 0.4) * 1.3;
+        y += (dy/mag) * velocidad * Math.max(mag, 0.4) * 1.3;
       }
     }
 
-    px = Math.max(50, Math.min(px, window.innerWidth-120));
-    py = Math.max(90, Math.min(py, window.innerHeight-140));
+    x = Math.max(60, Math.min(x, window.innerWidth-140));
+    y = Math.max(100, Math.min(y, window.innerHeight-160));
 
-    player.style.left = px+'px';
-    player.style.top  = py+'px';
+    blanco.style.left = x + 'px';
+    blanco.style.top  = y + 'px';
 
-    const dist = Math.hypot(px-tx, py-ty);
-    if(dist < 100 && !activated){
-      activated = true;
+    const distancia = Math.hypot(x - tx, y - ty);
+    if(distancia < 110 && !unidos) {
+      unidos = true;
       bg1.style.opacity = 0;
       bg2.style.opacity = 1;
-      carta.classList.add('visible');
+      // Aquí ya NO hay texto overlay → todo está en 2.png (incluida la fecha y carta)
     }
 
-    requestAnimationFrame(loop);
+    requestAnimationFrame(animar);
   }
 
-  window.addEventListener('resize', ()=>{
-    tx = Math.random()*(window.innerWidth*0.6) + window.innerWidth*0.2;
-    ty = Math.random()*(window.innerHeight*0.55) + window.innerHeight*0.15;
-    target.style.left=tx+'px'; target.style.top=ty+'px';
+  window.addEventListener('resize', () => {
+    tx = Math.random() * (window.innerWidth * 0.6) + window.innerWidth * 0.2;
+    ty = Math.random() * (window.innerHeight * 0.6) + window.innerHeight * 0.15;
+    negro.style.left = tx + 'px';
+    negro.style.top  = ty + 'px';
   });
 
-  loop();
+  animar();
 </script>
 </body>
 </html>
