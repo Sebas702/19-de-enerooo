@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>XI IX – I VII – MMXXVI</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+    html, body {
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+      background: #f5f2e9;
+      font-family: system-ui, -apple-system, sans-serif;
+      touch-action: none;
+    }
+
+    .container {
+      width: 100vw;
+      height: 100vh;
+      background: #fffaf0;
+      border-radius: 0;
+      box-shadow: 0 0 40px rgba(0,0,0,0.1);
+      position: relative;
+      overflow: hidden;
+      border: none;
+    }
+
+    .header {
+      position: absolute;
+      top: 12px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: clamp(1.4rem, 5vw, 2.2rem);
+      font-weight: 300;
+      letter-spacing: 4px;
+      color: #6b5a45;
+      z-index: 20;
+      pointer-events: none;
+    }
+
+    #game {
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+
+    .park-bg {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 20% 30%, #d8c9b0 0%, transparent 40%),
+                  radial-gradient(circle at 80% 70%, #d2bfa8 0%, transparent 45%);
+      pointer-events: none;
+    }
+
+    .tree {
+      position: absolute;
+      width: 110px;
+      height: 170px;
+      filter: drop-shadow(0 8px 12px rgba(0,0,0,0.12));
+    }
+    .tree::before {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 16px;
+      height: 80px;
+      background: #5c4033;
+      transform: translateX(-50%);
+      border-radius: 8px;
+    }
+    .tree::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: 90px;
+      height: 90px;
+      background: #6b8e23;
+      border-radius: 50%;
+      transform: translate(-50%, -40%) scale(1.1, 0.85);
+      box-shadow: inset -18px -18px 35px #5a7a1d;
+    }
+
+    .stickman {
+      position: absolute;
+      width: 48px;
+      height: 78px;
+      will-change: transform;
+    }
+
+    .head   { width: 22px; height: 22px; background: currentColor; border-radius: 50%; position: absolute; top: 0; left: 13px; }
+    .body   { width: 6px;  height: 36px; background: currentColor; position: absolute; top: 20px; left: 21px; border-radius: 3px; }
+    .arm    { width: 4px;  height: 22px; background: currentColor; position: absolute; border-radius: 2px; transform-origin: top; }
+    .arm-l  { top: 26px; left: 13px; transform: rotate(38deg); }
+    .arm-r  { top: 26px; left: 31px; transform: rotate(-38deg); }
+    .leg    { width: 4px;  height: 24px; background: currentColor; position: absolute; border-radius: 2px; transform-origin: top; }
+    .leg-l  { top: 52px; left: 15px; transform: rotate(22deg); }
+    .leg-r  { top: 52px; left: 29px; transform: rotate(-22deg); }
+
+    #player { color: #f8f1e5; }
+    #target { color: #4a2c1b; }
+
+    #card {
+      position: absolute;
+      inset: 0;
+      background: rgba(245, 240, 230, 0.97);
+      backdrop-filter: blur(12px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-size: clamp(2.8rem, 9vw, 5rem);
+      font-weight: 200;
+      letter-spacing: 8px;
+      color: #5c4033;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 1.4s ease;
+      z-index: 10;
+    }
+    #card.show { opacity: 1; }
+
+    /* Joystick táctil - solo en móvil */
+    #joystick {
+      position: absolute;
+      bottom: 18%;
+      left: 12%;
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      background: rgba(108, 90, 69, 0.08);
+      border: 1px solid rgba(108, 90, 69, 0.2);
+      z-index: 30;
+      touch-action: none;
+      display: none;
+    }
+    #knob {
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      background: rgba(108, 90, 69, 0.4);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    @media (max-width: 1024px) and (orientation: portrait) {
+      body::before {
+        content: "Por favor gira el móvil → modo horizontal";
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.85);
+        color: white;
+        font-size: 5vw;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        z-index: 9999;
+      }
+    }
+
+    @media (max-width: 1024px) {
+      #joystick { display: block; }
+      .header { top: 8px; font-size: 1.5rem; letter-spacing: 3px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">XI · IX – I · VII – MMXXVI</div>
+
+  <div id="game">
+    <div class="park-bg"></div>
+
+    <!-- Algunos árboles -->
+    <div class="tree" style="left:10%; top:42%; transform:scale(0.9);"></div>
+    <div class="tree" style="left:26%; top:35%; transform:scale(1.2);"></div>
+    <div class="tree" style="right:15%; top:48%; transform:scale(0.85);"></div>
+    <div class="tree" style="right:32%; top:39%; transform:scale(1.1);"></div>
+
+    <div id="player" class="stickman">
+      <div class="head"></div>
+      <div class="body"></div>
+      <div class="arm arm-l"></div>
+      <div class="arm arm-r"></div>
+      <div class="leg leg-l"></div>
+      <div class="leg leg-r"></div>
+    </div>
+
+    <div id="target" class="stickman">
+      <div class="head"></div>
+      <div class="body"></div>
+      <div class="arm arm-l"></div>
+      <div class="arm arm-r"></div>
+      <div class="leg leg-l"></div>
+      <div class="leg leg-r"></div>
+    </div>
+
+    <div id="card">XIX · VII · MMXXVI</div>
+
+    <!-- Joystick táctil -->
+    <div id="joystick">
+      <div id="knob"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const player = document.getElementById('player');
+  const target = document.getElementById('target');
+  const card   = document.getElementById('card');
+  const joystick = document.getElementById('joystick');
+  const knob     = document.getElementById('knob');
+
+  let x = window.innerWidth * 0.3;
+  let y = window.innerHeight * 0.5;
+  const speed = 3.8;
+
+  // Posición inicial del moreno
+  let tx = Math.random() * (window.innerWidth * 0.6) + window.innerWidth * 0.2;
+  let ty = Math.random() * (window.innerHeight * 0.5) + window.innerHeight * 0.15;
+
+  target.style.left = tx + 'px';
+  target.style.top  = ty + 'px';
+  player.style.left = x + 'px';
+  player.style.top  = y + 'px';
+
+  // Teclado (para PC)
+  const keys = {};
+  window.addEventListener('keydown', e => keys[e.key.toLowerCase()] = true);
+  window.addEventListener('keyup',   e => keys[e.key.toLowerCase()] = false);
+
+  // Joystick táctil
+  let touchId = null;
+  let centerX, centerY;
+  let moveX = 0, moveY = 0;
+
+  joystick.addEventListener('touchstart', e => {
+    e.preventDefault();
+    if (touchId === null) {
+      touchId = e.changedTouches[0].identifier;
+      updateJoystick(e.changedTouches[0]);
+    }
+  });
+
+  joystick.addEventListener('touchmove', e => {
+    e.preventDefault();
+    for (let touch of e.changedTouches) {
+      if (touch.identifier === touchId) {
+        updateJoystick(touch);
+      }
+    }
+  });
+
+  joystick.addEventListener('touchend', e => {
+    e.preventDefault();
+    for (let touch of e.changedTouches) {
+      if (touch.identifier === touchId) {
+        resetJoystick();
+      }
+    }
+  });
+
+  function updateJoystick(touch) {
+    if (!centerX) {
+      const rect = joystick.getBoundingClientRect();
+      centerX = rect.left + rect.width / 2;
+      centerY = rect.top + rect.height / 2;
+    }
+
+    let dx = touch.clientX - centerX;
+    let dy = touch.clientY - centerY;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    const maxDist = 60;
+
+    if (dist > maxDist) {
+      dx *= maxDist / dist;
+      dy *= maxDist / dist;
+    }
+
+    knob.style.left = (centerX + dx) + 'px';
+    knob.style.top  = (centerY + dy) + 'px';
+
+    moveX = dx / maxDist;
+    moveY = dy / maxDist;
+  }
+
+  function resetJoystick() {
+    touchId = null;
+    moveX = moveY = 0;
+    knob.style.left = '50%';
+    knob.style.top  = '50%';
+  }
+
+  function loop() {
+    let dx = 0, dy = 0;
+
+    // Teclado
+    if (keys['w'] || keys['arrowup'])    dy -= 1;
+    if (keys['s'] || keys['arrowdown'])  dy += 1;
+    if (keys['a'] || keys['arrowleft'])  dx -= 1;
+    if (keys['d'] || keys['arrowright']) dx += 1;
+
+    // Joystick (prioridad si está activo)
+    if (moveX !== 0 || moveY !== 0) {
+      dx = moveX;
+      dy = moveY;
+    }
+
+    if (dx !== 0 || dy !== 0) {
+      const mag = Math.sqrt(dx*dx + dy*dy);
+      if (mag > 0) {
+        x += (dx / mag) * speed * (mag > 0.3 ? mag : 0.3) * 1.6;
+        y += (dy / mag) * speed * (mag > 0.3 ? mag : 0.3) * 1.6;
+      }
+    }
+
+    // Límites
+    x = Math.max(30, Math.min(x, window.innerWidth - 80));
+    y = Math.max(80, Math.min(y, window.innerHeight - 100));
+
+    player.style.left = x + 'px';
+    player.style.top  = y + 'px';
+
+    // Distancia al target
+    const dist = Math.hypot(x - tx, y - ty);
+    if (dist < 75) {
+      card.classList.add('show');
+    }
+
+    requestAnimationFrame(loop);
+  }
+
+  // Ajustar al cambiar tamaño (rotación)
+  window.addEventListener('resize', () => {
+    tx = Math.random() * (window.innerWidth * 0.6) + window.innerWidth * 0.2;
+    ty = Math.random() * (window.innerHeight * 0.5) + window.innerHeight * 0.15;
+    target.style.left = tx + 'px';
+    target.style.top  = ty + 'px';
+  });
+
+  loop();
+</script>
+</body>
+</html>
