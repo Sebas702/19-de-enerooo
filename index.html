@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <title>XI IX – I VII – MMXXVI</title>
+  <title>Feliz 19 mi princesa 🤍</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
   <style>
@@ -25,112 +25,90 @@
     .container {
       width: 100vw;
       height: 100vh;
-      background: #fffaf0;
-      border-radius: 0;
-      box-shadow: 0 0 40px rgba(0,0,0,0.1);
       position: relative;
       overflow: hidden;
-      border: none;
     }
 
-    .header {
+    #background {
       position: absolute;
-      top: 12px;
-      left: 0;
-      right: 0;
-      text-align: center;
-      font-size: clamp(1.4rem, 5vw, 2.2rem);
-      font-weight: 300;
-      letter-spacing: 4px;
-      color: #6b5a45;
-      z-index: 20;
-      pointer-events: none;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      transition: opacity 1.2s ease;
+      will-change: opacity;
     }
+    #bg1 { background-image: url('1.png'); opacity: 1; z-index: 1; }
+    #bg2 { background-image: url('2.png'); opacity: 0; z-index: 2; }
 
     #game {
-      width: 100%;
-      height: 100%;
-      position: relative;
-    }
-
-    .park-bg {
       position: absolute;
       inset: 0;
-      background: radial-gradient(circle at 20% 30%, #d8c9b0 0%, transparent 40%),
-                  radial-gradient(circle at 80% 70%, #d2bfa8 0%, transparent 45%);
+      z-index: 10;
       pointer-events: none;
     }
+    #game > * { pointer-events: auto; }
 
-    .tree {
+    .character {
       position: absolute;
-      width: 110px;
-      height: 170px;
-      filter: drop-shadow(0 8px 12px rgba(0,0,0,0.12));
-    }
-    .tree::before {
-      content: "";
-      position: absolute;
-      bottom: 0;
-      left: 50%;
-      width: 16px;
-      height: 80px;
-      background: #5c4033;
-      transform: translateX(-50%);
-      border-radius: 8px;
-    }
-    .tree::after {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 50%;
-      width: 90px;
-      height: 90px;
-      background: #6b8e23;
-      border-radius: 50%;
-      transform: translate(-50%, -40%) scale(1.1, 0.85);
-      box-shadow: inset -18px -18px 35px #5a7a1d;
-    }
-
-    .stickman {
-      position: absolute;
-      width: 48px;
-      height: 78px;
+      width: 60px;
+      height: 100px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
       will-change: transform;
+      image-rendering: crisp-edges;
     }
+    #player  { background-image: url('blanco.png'); }
+    #target  { background-image: url('negro.png'); }
 
-    .head   { width: 22px; height: 22px; background: currentColor; border-radius: 50%; position: absolute; top: 0; left: 13px; }
-    .body   { width: 6px;  height: 36px; background: currentColor; position: absolute; top: 20px; left: 21px; border-radius: 3px; }
-    .arm    { width: 4px;  height: 22px; background: currentColor; position: absolute; border-radius: 2px; transform-origin: top; }
-    .arm-l  { top: 26px; left: 13px; transform: rotate(38deg); }
-    .arm-r  { top: 26px; left: 31px; transform: rotate(-38deg); }
-    .leg    { width: 4px;  height: 24px; background: currentColor; position: absolute; border-radius: 2px; transform-origin: top; }
-    .leg-l  { top: 52px; left: 15px; transform: rotate(22deg); }
-    .leg-r  { top: 52px; left: 29px; transform: rotate(-22deg); }
-
-    #player { color: #f8f1e5; }
-    #target { color: #4a2c1b; }
-
-    #card {
+    #carta-texto {
       position: absolute;
       inset: 0;
-      background: rgba(245, 240, 230, 0.97);
-      backdrop-filter: blur(12px);
       display: flex;
-      flex-direction: column;
       justify-content: center;
       align-items: center;
-      font-size: clamp(2.8rem, 9vw, 5rem);
-      font-weight: 200;
-      letter-spacing: 8px;
-      color: #5c4033;
       opacity: 0;
+      transition: opacity 1.8s ease;
       pointer-events: none;
-      transition: opacity 1.4s ease;
-      z-index: 10;
+      z-index: 15;
+      background: rgba(245, 240, 230, 0.75); /* fondo semitransparente para legibilidad */
+      backdrop-filter: blur(8px);
     }
-    #card.show { opacity: 1; }
 
-    /* Joystick táctil - solo en móvil */
+    #carta-texto.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .contenido {
+      max-width: 90%;
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: 20px;
+      text-align: center;
+      color: #4a2c1b;
+      font-weight: 300;
+      line-height: 1.5;
+      font-size: clamp(1.1rem, 3.5vw, 1.8rem);
+      text-shadow: 0 1px 4px rgba(0,0,0,0.15);
+    }
+
+    .contenido strong {
+      color: #6b5a45;
+      font-weight: 500;
+    }
+
+    /* Scrollbar bonito (opcional) */
+    .contenido::-webkit-scrollbar {
+      width: 8px;
+    }
+    .contenido::-webkit-scrollbar-thumb {
+      background: #a68a6e;
+      border-radius: 4px;
+    }
+
+    /* Joystick táctil */
     #joystick {
       position: absolute;
       bottom: 18%;
@@ -156,7 +134,7 @@
 
     @media (max-width: 1024px) and (orientation: portrait) {
       body::before {
-        content: "Por favor gira el móvil → modo horizontal";
+        content: "Gira el móvil → modo horizontal";
         position: fixed;
         inset: 0;
         background: rgba(0,0,0,0.85);
@@ -172,45 +150,28 @@
 
     @media (max-width: 1024px) {
       #joystick { display: block; }
-      .header { top: 8px; font-size: 1.5rem; letter-spacing: 3px; }
+      .contenido { font-size: clamp(1rem, 4vw, 1.5rem); padding: 15px; }
     }
   </style>
 </head>
 <body>
 
 <div class="container">
-  <div class="header">XI · IX – I · VII – MMXXVI</div>
+  <div id="background">
+    <div id="bg1"></div>
+    <div id="bg2"></div>
+  </div>
 
   <div id="game">
-    <div class="park-bg"></div>
+    <div id="player" class="character"></div>
+    <div id="target" class="character"></div>
 
-    <!-- Algunos árboles -->
-    <div class="tree" style="left:10%; top:42%; transform:scale(0.9);"></div>
-    <div class="tree" style="left:26%; top:35%; transform:scale(1.2);"></div>
-    <div class="tree" style="right:15%; top:48%; transform:scale(0.85);"></div>
-    <div class="tree" style="right:32%; top:39%; transform:scale(1.1);"></div>
-
-    <div id="player" class="stickman">
-      <div class="head"></div>
-      <div class="body"></div>
-      <div class="arm arm-l"></div>
-      <div class="arm arm-r"></div>
-      <div class="leg leg-l"></div>
-      <div class="leg leg-r"></div>
+    <div id="carta-texto">
+      <div class="contenido">
+        feliz 19 mi princesa, ya es 1 añito y 1 mes juntitos, y de verdad que esto no puede ser más bonito, quiero agradecerte a ti el que estés hoy aquí, un día más a mi lado, aparte de a la vida por permitirme estar otro día más aquí, ya es más de 1 añito miniña, y quiero darte las gracias por todo, porque siempre has hecho tanto miniña, gracias por ser tan especial como siempre lo has sido, gracias por ser atenta y por escucharme cuando a veces ni yo me entendía, gracias por entenderme, por tu forma y tu manera de querer, por poner tu confianza en mí, por no dar las cosas por perdidas, por seguir luchando en el nombre de ambos, por hacerme cada día el hombre más feliz del mundo, por quitarme miedos, por apoyarme a ser cada día una mejor persona, por llevarme siempre por el buen camino, por ser como eres conmigo, por quererme e incluirme en tu vida, por ser tu mor. no me imagino un día sin ti, sin esos morritos, esas sonrisas tuyas, esa nariz chiquitita y esa mirada que me trae loco, eres más que hermosa, eres una perfección hija de puta, no puedo estar más feliz de haberme quedado a tu lado, porque no te has merecido nunca menos, lo quiero todito contigo vida mía, eres el oxígeno de mi vida, y no sé qué haría sin el oxígeno. gracias de corazón por tus palabras cuando más apoyo o cariño necesito, por tus gestos que llenan mi corazón con todo tu cariño, por tu cariño incondicional, por tu tiempo, y por todo lo increíble que eres, no dejes nunca de luchar, confío en ti y sé que se nos va a dar todito lo que buscamos ambos, siempre orgulloso de ti vida mía, no puedo estar más agradecido con la vida por enviar ese mensaje ese 19 de enero, no tienes defectos vida mía, no creo que exista otra palabra que describa más perfectamente la perfección que tu propio nombre, laura, l a u r a, l de la mejor, porque eres de lo mejorcito que hay vida mía, a de asombrosa, porque no puedo pensar en nadie más al decir esa palabra, u de única, porque como miniña nunca va a haber otra igual, tan pura, tan bonita, tan hermosa, r de reliquia, porque eres muy difícil de encontrar pero cuando te tienen es algo hermoso y otra a de ambiciosa, porque miniña nunca se ha rendido, siempre me demuestra cada día lo increíble, lo fuerte y lo valiente que es, no veo malas palabras hacia ti, porque de verdad, te quiero, te amo mor, y no eres menos en mi vida. sé que no soy perfecto pero siempre trataré de dar el 200% por ti miamor, porque lo quiero todo contigo y haré siempre hasta lo imposible para que así siempre sea, no te voy a tratar mal, menos a obligarte a hacer cosas que no, quiero que puedas fluir, sentirte la princesa que eres, que puedas notar ese amor que te tienes más que merecido cada día, con esa carita hermosa, esos labios bonitos, esa nariz, esa miradita y ese corazón tan puro, a veces me siento contigo en una nube, es una sensación tan cariñosa, eres mi hogar, siempre antes de dormir pienso en la gran suerte que tengo de poder tenerte aquí, porque lo eres todo, lo vales todo, no quiero a otra puta, me quiero despertar siempre con mi blanquita a mi lado, quiero poder estar en tus risas, en tus rayadas para sobreexplicarte las cosas, en tus problemas para que sepas lo que es de verdad un apoyo, en tus desgracias para protegerte de ellas y cuidarte de todo mal, quiero ser el que siempre esté ahí cuidando tu corazón, aunque tengas miedo, aunque te hayan pasado mil y un cosas, todo eso no va a dejar de verte o amarte como lo hago mi reina, nunca dejes de ser tan increíble, tan cariñosa, tan tú. no prometo locuras, pero sí que lo quiero todo contigo, que vas a tener la culpa de que me gaste 500 euros al mes en flores y en que vas a ser la primera palabra que se impregne en mi piel a través de una tinta, espero que sigas siendo como tú eres, que yo no pienso dejar de amarte. admirarte, quererte y apoyarte. por todito y por mucho más, pero siempre a tu lado, te amo millones pequeña y feliz 19 a mi osita, no sé qué haría sin ti, eres mi luz, mi motor, lo eres todito para mí pequeñita, bien feliz te digo esto y con miles de ganas de verte y darte ese abrazo, gracias por tanto mi reina, te amo con todo lo que soy🤍
+      </div>
     </div>
 
-    <div id="target" class="stickman">
-      <div class="head"></div>
-      <div class="body"></div>
-      <div class="arm arm-l"></div>
-      <div class="arm arm-r"></div>
-      <div class="leg leg-l"></div>
-      <div class="leg leg-r"></div>
-    </div>
-
-    <div id="card">XIX · VII · MMXXVI</div>
-
-    <!-- Joystick táctil -->
     <div id="joystick">
       <div id="knob"></div>
     </div>
@@ -218,31 +179,30 @@
 </div>
 
 <script>
+  const bg1 = document.getElementById('bg1');
+  const bg2 = document.getElementById('bg2');
   const player = document.getElementById('player');
   const target = document.getElementById('target');
-  const card   = document.getElementById('card');
+  const cartaTexto = document.getElementById('carta-texto');
   const joystick = document.getElementById('joystick');
-  const knob     = document.getElementById('knob');
+  const knob = document.getElementById('knob');
 
   let x = window.innerWidth * 0.3;
-  let y = window.innerHeight * 0.5;
-  const speed = 3.8;
+  let y = window.innerHeight * 0.55;
+  const speed = 4.2;
 
-  // Posición inicial del moreno
   let tx = Math.random() * (window.innerWidth * 0.6) + window.innerWidth * 0.2;
-  let ty = Math.random() * (window.innerHeight * 0.5) + window.innerHeight * 0.15;
+  let ty = Math.random() * (window.innerHeight * 0.5) + window.innerHeight * 0.2;
 
-  target.style.left = tx + 'px';
-  target.style.top  = ty + 'px';
   player.style.left = x + 'px';
   player.style.top  = y + 'px';
+  target.style.left = tx + 'px';
+  target.style.top  = ty + 'px';
 
-  // Teclado (para PC)
   const keys = {};
   window.addEventListener('keydown', e => keys[e.key.toLowerCase()] = true);
   window.addEventListener('keyup',   e => keys[e.key.toLowerCase()] = false);
 
-  // Joystick táctil
   let touchId = null;
   let centerX, centerY;
   let moveX = 0, moveY = 0;
@@ -265,7 +225,6 @@
   });
 
   joystick.addEventListener('touchend', e => {
-    e.preventDefault();
     for (let touch of e.changedTouches) {
       if (touch.identifier === touchId) {
         resetJoystick();
@@ -279,20 +238,16 @@
       centerX = rect.left + rect.width / 2;
       centerY = rect.top + rect.height / 2;
     }
-
     let dx = touch.clientX - centerX;
     let dy = touch.clientY - centerY;
     const dist = Math.sqrt(dx*dx + dy*dy);
     const maxDist = 60;
-
     if (dist > maxDist) {
       dx *= maxDist / dist;
       dy *= maxDist / dist;
     }
-
-    knob.style.left = (centerX + dx) + 'px';
-    knob.style.top  = (centerY + dy) + 'px';
-
+    knob.style.left = `${centerX + dx}px`;
+    knob.style.top  = `${centerY + dy}px`;
     moveX = dx / maxDist;
     moveY = dy / maxDist;
   }
@@ -304,49 +259,49 @@
     knob.style.top  = '50%';
   }
 
+  let reached = false;
+
   function loop() {
     let dx = 0, dy = 0;
 
-    // Teclado
     if (keys['w'] || keys['arrowup'])    dy -= 1;
     if (keys['s'] || keys['arrowdown'])  dy += 1;
     if (keys['a'] || keys['arrowleft'])  dx -= 1;
     if (keys['d'] || keys['arrowright']) dx += 1;
 
-    // Joystick (prioridad si está activo)
     if (moveX !== 0 || moveY !== 0) {
       dx = moveX;
       dy = moveY;
     }
 
     if (dx !== 0 || dy !== 0) {
-      const mag = Math.sqrt(dx*dx + dy*dy);
+      const mag = Math.hypot(dx, dy);
       if (mag > 0) {
-        x += (dx / mag) * speed * (mag > 0.3 ? mag : 0.3) * 1.6;
-        y += (dy / mag) * speed * (mag > 0.3 ? mag : 0.3) * 1.6;
+        x += (dx / mag) * speed * Math.max(mag, 0.3) * 1.5;
+        y += (dy / mag) * speed * Math.max(mag, 0.3) * 1.5;
       }
     }
 
-    // Límites
-    x = Math.max(30, Math.min(x, window.innerWidth - 80));
-    y = Math.max(80, Math.min(y, window.innerHeight - 100));
+    x = Math.max(40, Math.min(x, window.innerWidth - 100));
+    y = Math.max(80, Math.min(y, window.innerHeight - 120));
 
     player.style.left = x + 'px';
     player.style.top  = y + 'px';
 
-    // Distancia al target
     const dist = Math.hypot(x - tx, y - ty);
-    if (dist < 75) {
-      card.classList.add('show');
+    if (dist < 90 && !reached) {
+      reached = true;
+      bg1.style.opacity = 0;
+      bg2.style.opacity = 1;
+      cartaTexto.classList.add('visible');
     }
 
     requestAnimationFrame(loop);
   }
 
-  // Ajustar al cambiar tamaño (rotación)
   window.addEventListener('resize', () => {
     tx = Math.random() * (window.innerWidth * 0.6) + window.innerWidth * 0.2;
-    ty = Math.random() * (window.innerHeight * 0.5) + window.innerHeight * 0.15;
+    ty = Math.random() * (window.innerHeight * 0.5) + window.innerHeight * 0.2;
     target.style.left = tx + 'px';
     target.style.top  = ty + 'px';
   });
