@@ -1,22 +1,4 @@
-Entendido, vamos a arreglarlo paso a paso. Los problemas más comunes por los que "no se ve ningún fondo" son:
-
-Las imágenes (1.png y 2.png) no están en la misma carpeta que el archivo index.html
-Los nombres de archivo no coinciden exactamente (mayúsculas/minúsculas, extensión .PNG vs .png)
-El navegador bloquea la carga local de imágenes por políticas de seguridad (muy común en Chrome si abres directamente con file://)
-
-Soluciones rápidas para probar YA
-
-Verifica la estructura de carpetas
-Debe quedar exactamente así:textcarpeta/
-├── index.html          ← el código que te paso abajo
-├── 1.png               ← fondo inicial (el parque sin carta)
-├── 2.png               ← fondo final (con la carta/texto ya dibujado en la imagen)
-├── blanco.png
-└── negro.png
-Código corregido y simplificado (con fecha visible solo en 2.png)
-He quitado el overlay de texto (para que solo dependa de tus imágenes) y he asegurado que los fondos se carguen bien. Copia este código completo en index.html:
-
-HTML<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
