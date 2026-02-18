@@ -7,151 +7,65 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
-    html, body {
-      height: 100%;
-      width: 100%;
-      overflow: hidden;
-      background: #f5f2e9;
-      font-family: system-ui, -apple-system, sans-serif;
-      touch-action: none;
-    }
+    * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+    html, body { height:100%; width:100%; overflow:hidden; background:#f5f2e9; font-family:system-ui,sans-serif; touch-action:none; }
 
-    .container {
-      width: 100vw;
-      height: 100vh;
-      position: relative;
-      overflow: hidden;
-    }
+    .container { width:100vw; height:100vh; position:relative; overflow:hidden; }
 
-    #background {
-      position: absolute;
-      inset: 0;
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      transition: opacity 1.2s ease;
-      will-change: opacity;
-    }
-    #bg1 { background-image: url('1.png'); opacity: 1; z-index: 1; }
-    #bg2 { background-image: url('2.png'); opacity: 0; z-index: 2; }
+    #background { position:absolute; inset:0; background-size:cover; background-position:center; background-repeat:no-repeat; transition:opacity 1.4s ease; }
+    #bg1 { background-image:url('1.png'); opacity:1; z-index:1; }
+    #bg2 { background-image:url('2.png'); opacity:0; z-index:2; }
 
-    #game {
-      position: absolute;
-      inset: 0;
-      z-index: 10;
-      pointer-events: none;
-    }
-    #game > * { pointer-events: auto; }
+    #game { position:absolute; inset:0; z-index:10; pointer-events:none; }
+    #game > * { pointer-events:auto; }
 
-    .character {
-      position: absolute;
-      width: 60px;
-      height: 100px;
-      background-size: contain;
-      background-repeat: no-repeat;
-      background-position: center;
-      will-change: transform;
-      image-rendering: crisp-edges;
+    .character { 
+      position:absolute; 
+      width:70px;          /* ← ajusta según tamaño real de tus PNG */
+      height:110px; 
+      background-size:contain; 
+      background-repeat:no-repeat; 
+      background-position:center bottom; 
+      will-change:transform; 
     }
-    #player  { background-image: url('blanco.png'); }
-    #target  { background-image: url('negro.png'); }
+    #player { background-image:url('blanco.png'); }
+    #target { background-image:url('negro.png'); }
 
-    #carta-texto {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      opacity: 0;
-      transition: opacity 1.8s ease;
-      pointer-events: none;
-      z-index: 15;
-      background: rgba(245, 240, 230, 0.75); /* fondo semitransparente para legibilidad */
-      backdrop-filter: blur(8px);
+    #carta {
+      position:absolute; inset:0; 
+      opacity:0; transition:opacity 2s ease; 
+      pointer-events:none; z-index:15;
+      display:flex; justify-content:center; align-items:center;
+      background:rgba(250,245,235,0.82); backdrop-filter:blur(10px);
     }
+    #carta.visible { opacity:1; pointer-events:auto; }
 
-    #carta-texto.visible {
-      opacity: 1;
-      pointer-events: auto;
+    .texto-carta {
+      max-width:92%; max-height:88vh; overflow-y:auto; padding:20px 15px;
+      color:#3c2410; font-size:clamp(1.05rem, 3.4vw, 1.65rem); line-height:1.55;
+      text-align:justify; font-weight:350; letter-spacing:0.3px;
     }
+    .texto-carta::-webkit-scrollbar { width:7px; }
+    .texto-carta::-webkit-scrollbar-thumb { background:#a68a6e; border-radius:4px; }
 
-    .contenido {
-      max-width: 90%;
-      max-height: 85vh;
-      overflow-y: auto;
-      padding: 20px;
-      text-align: center;
-      color: #4a2c1b;
-      font-weight: 300;
-      line-height: 1.5;
-      font-size: clamp(1.1rem, 3.5vw, 1.8rem);
-      text-shadow: 0 1px 4px rgba(0,0,0,0.15);
-    }
-
-    .contenido strong {
-      color: #6b5a45;
-      font-weight: 500;
-    }
-
-    /* Scrollbar bonito (opcional) */
-    .contenido::-webkit-scrollbar {
-      width: 8px;
-    }
-    .contenido::-webkit-scrollbar-thumb {
-      background: #a68a6e;
-      border-radius: 4px;
-    }
-
-    /* Joystick táctil */
     #joystick {
-      position: absolute;
-      bottom: 18%;
-      left: 12%;
-      width: 140px;
-      height: 140px;
-      border-radius: 50%;
-      background: rgba(108, 90, 69, 0.08);
-      border: 1px solid rgba(108, 90, 69, 0.2);
-      z-index: 30;
-      touch-action: none;
-      display: none;
+      position:absolute; bottom:16%; left:10%; width:150px; height:150px;
+      border-radius:50%; background:rgba(100,80,60,0.09); border:1px solid rgba(100,80,60,0.18);
+      z-index:30; touch-action:none; display:none;
     }
     #knob {
-      position: absolute;
-      width: 60px;
-      height: 60px;
-      background: rgba(108, 90, 69, 0.4);
-      border-radius: 50%;
-      transform: translate(-50%, -50%);
-      pointer-events: none;
+      position:absolute; width:65px; height:65px; background:rgba(100,80,60,0.45);
+      border-radius:50%; transform:translate(-50%,-50%); pointer-events:none;
     }
 
-    @media (max-width: 1024px) and (orientation: portrait) {
+    @media (max-width:1024px) and (orientation:portrait) {
       body::before {
-        content: "Gira el móvil → modo horizontal";
-        position: fixed;
-        inset: 0;
-        background: rgba(0,0,0,0.85);
-        color: white;
-        font-size: 5vw;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        z-index: 9999;
+        content:"Gira el móvil a horizontal por favor";
+        position:fixed; inset:0; background:rgba(0,0,0,0.9); color:white;
+        font-size:6vw; display:flex; align-items:center; justify-content:center; text-align:center; z-index:9999;
       }
     }
-
-    @media (max-width: 1024px) {
-      #joystick { display: block; }
-      .contenido { font-size: clamp(1rem, 4vw, 1.5rem); padding: 15px; }
-    }
+    @media (max-width:1024px) { #joystick { display:block; } }
   </style>
 </head>
 <body>
@@ -166,15 +80,13 @@
     <div id="player" class="character"></div>
     <div id="target" class="character"></div>
 
-    <div id="carta-texto">
-      <div class="contenido">
+    <div id="carta">
+      <div class="texto-carta">
         feliz 19 mi princesa, ya es 1 añito y 1 mes juntitos, y de verdad que esto no puede ser más bonito, quiero agradecerte a ti el que estés hoy aquí, un día más a mi lado, aparte de a la vida por permitirme estar otro día más aquí, ya es más de 1 añito miniña, y quiero darte las gracias por todo, porque siempre has hecho tanto miniña, gracias por ser tan especial como siempre lo has sido, gracias por ser atenta y por escucharme cuando a veces ni yo me entendía, gracias por entenderme, por tu forma y tu manera de querer, por poner tu confianza en mí, por no dar las cosas por perdidas, por seguir luchando en el nombre de ambos, por hacerme cada día el hombre más feliz del mundo, por quitarme miedos, por apoyarme a ser cada día una mejor persona, por llevarme siempre por el buen camino, por ser como eres conmigo, por quererme e incluirme en tu vida, por ser tu mor. no me imagino un día sin ti, sin esos morritos, esas sonrisas tuyas, esa nariz chiquitita y esa mirada que me trae loco, eres más que hermosa, eres una perfección hija de puta, no puedo estar más feliz de haberme quedado a tu lado, porque no te has merecido nunca menos, lo quiero todito contigo vida mía, eres el oxígeno de mi vida, y no sé qué haría sin el oxígeno. gracias de corazón por tus palabras cuando más apoyo o cariño necesito, por tus gestos que llenan mi corazón con todo tu cariño, por tu cariño incondicional, por tu tiempo, y por todo lo increíble que eres, no dejes nunca de luchar, confío en ti y sé que se nos va a dar todito lo que buscamos ambos, siempre orgulloso de ti vida mía, no puedo estar más agradecido con la vida por enviar ese mensaje ese 19 de enero, no tienes defectos vida mía, no creo que exista otra palabra que describa más perfectamente la perfección que tu propio nombre, laura, l a u r a, l de la mejor, porque eres de lo mejorcito que hay vida mía, a de asombrosa, porque no puedo pensar en nadie más al decir esa palabra, u de única, porque como miniña nunca va a haber otra igual, tan pura, tan bonita, tan hermosa, r de reliquia, porque eres muy difícil de encontrar pero cuando te tienen es algo hermoso y otra a de ambiciosa, porque miniña nunca se ha rendido, siempre me demuestra cada día lo increíble, lo fuerte y lo valiente que es, no veo malas palabras hacia ti, porque de verdad, te quiero, te amo mor, y no eres menos en mi vida. sé que no soy perfecto pero siempre trataré de dar el 200% por ti miamor, porque lo quiero todo contigo y haré siempre hasta lo imposible para que así siempre sea, no te voy a tratar mal, menos a obligarte a hacer cosas que no, quiero que puedas fluir, sentirte la princesa que eres, que puedas notar ese amor que te tienes más que merecido cada día, con esa carita hermosa, esos labios bonitos, esa nariz, esa miradita y ese corazón tan puro, a veces me siento contigo en una nube, es una sensación tan cariñosa, eres mi hogar, siempre antes de dormir pienso en la gran suerte que tengo de poder tenerte aquí, porque lo eres todo, lo vales todo, no quiero a otra puta, me quiero despertar siempre con mi blanquita a mi lado, quiero poder estar en tus risas, en tus rayadas para sobreexplicarte las cosas, en tus problemas para que sepas lo que es de verdad un apoyo, en tus desgracias para protegerte de ellas y cuidarte de todo mal, quiero ser el que siempre esté ahí cuidando tu corazón, aunque tengas miedo, aunque te hayan pasado mil y un cosas, todo eso no va a dejar de verte o amarte como lo hago mi reina, nunca dejes de ser tan increíble, tan cariñosa, tan tú. no prometo locuras, pero sí que lo quiero todo contigo, que vas a tener la culpa de que me gaste 500 euros al mes en flores y en que vas a ser la primera palabra que se impregne en mi piel a través de una tinta, espero que sigas siendo como tú eres, que yo no pienso dejar de amarte. admirarte, quererte y apoyarte. por todito y por mucho más, pero siempre a tu lado, te amo millones pequeña y feliz 19 a mi osita, no sé qué haría sin ti, eres mi luz, mi motor, lo eres todito para mí pequeñita, bien feliz te digo esto y con miles de ganas de verte y darte ese abrazo, gracias por tanto mi reina, te amo con todo lo que soy🤍
       </div>
     </div>
 
-    <div id="joystick">
-      <div id="knob"></div>
-    </div>
+    <div id="joystick"><div id="knob"></div></div>
   </div>
 </div>
 
@@ -183,127 +95,79 @@
   const bg2 = document.getElementById('bg2');
   const player = document.getElementById('player');
   const target = document.getElementById('target');
-  const cartaTexto = document.getElementById('carta-texto');
+  const carta = document.getElementById('carta');
   const joystick = document.getElementById('joystick');
   const knob = document.getElementById('knob');
 
-  let x = window.innerWidth * 0.3;
-  let y = window.innerHeight * 0.55;
-  const speed = 4.2;
+  let px = window.innerWidth * 0.28;
+  let py = window.innerHeight * 0.55;
+  const speed = 4.5;
 
   let tx = Math.random() * (window.innerWidth * 0.6) + window.innerWidth * 0.2;
-  let ty = Math.random() * (window.innerHeight * 0.5) + window.innerHeight * 0.2;
+  let ty = Math.random() * (window.innerHeight * 0.55) + window.innerHeight * 0.15;
 
-  player.style.left = x + 'px';
-  player.style.top  = y + 'px';
-  target.style.left = tx + 'px';
-  target.style.top  = ty + 'px';
+  player.style.left = px + 'px'; player.style.top = py + 'px';
+  target.style.left = tx + 'px'; target.style.top = ty + 'px';
 
   const keys = {};
-  window.addEventListener('keydown', e => keys[e.key.toLowerCase()] = true);
-  window.addEventListener('keyup',   e => keys[e.key.toLowerCase()] = false);
+  window.addEventListener('keydown', e=>keys[e.key.toLowerCase()]=true);
+  window.addEventListener('keyup', e=>keys[e.key.toLowerCase()]=false);
 
-  let touchId = null;
-  let centerX, centerY;
-  let moveX = 0, moveY = 0;
+  let touchId = null, centerX, centerY, moveX=0, moveY=0;
 
-  joystick.addEventListener('touchstart', e => {
-    e.preventDefault();
-    if (touchId === null) {
-      touchId = e.changedTouches[0].identifier;
-      updateJoystick(e.changedTouches[0]);
-    }
-  });
+  joystick.addEventListener('touchstart', e=>{e.preventDefault(); if(touchId===null){touchId=e.changedTouches[0].identifier; updateJoy(e.changedTouches[0]);}});
+  joystick.addEventListener('touchmove', e=>{e.preventDefault(); for(let t of e.changedTouches)if(t.identifier===touchId)updateJoy(t);});
+  joystick.addEventListener('touchend', e=>{e.preventDefault(); for(let t of e.changedTouches)if(t.identifier===touchId)resetJoy();});
 
-  joystick.addEventListener('touchmove', e => {
-    e.preventDefault();
-    for (let touch of e.changedTouches) {
-      if (touch.identifier === touchId) {
-        updateJoystick(touch);
-      }
-    }
-  });
-
-  joystick.addEventListener('touchend', e => {
-    for (let touch of e.changedTouches) {
-      if (touch.identifier === touchId) {
-        resetJoystick();
-      }
-    }
-  });
-
-  function updateJoystick(touch) {
-    if (!centerX) {
-      const rect = joystick.getBoundingClientRect();
-      centerX = rect.left + rect.width / 2;
-      centerY = rect.top + rect.height / 2;
-    }
-    let dx = touch.clientX - centerX;
-    let dy = touch.clientY - centerY;
-    const dist = Math.sqrt(dx*dx + dy*dy);
-    const maxDist = 60;
-    if (dist > maxDist) {
-      dx *= maxDist / dist;
-      dy *= maxDist / dist;
-    }
-    knob.style.left = `${centerX + dx}px`;
-    knob.style.top  = `${centerY + dy}px`;
-    moveX = dx / maxDist;
-    moveY = dy / maxDist;
+  function updateJoy(t){
+    if(!centerX){const r=joystick.getBoundingClientRect(); centerX=r.left+r.width/2; centerY=r.top+r.height/2;}
+    let dx=t.clientX-centerX, dy=t.clientY-centerY;
+    const d=Math.hypot(dx,dy), md=65; if(d>md){dx*=md/d; dy*=md/d;}
+    knob.style.left=`${centerX+dx}px`; knob.style.top=`${centerY+dy}px`;
+    moveX=dx/md; moveY=dy/md;
   }
+  function resetJoy(){ touchId=null; moveX=moveY=0; knob.style.left='50%'; knob.style.top='50%'; }
 
-  function resetJoystick() {
-    touchId = null;
-    moveX = moveY = 0;
-    knob.style.left = '50%';
-    knob.style.top  = '50%';
-  }
+  let activated = false;
 
-  let reached = false;
+  function loop(){
+    let dx=0, dy=0;
+    if(keys['w']||keys['arrowup']) dy-=1;
+    if(keys['s']||keys['arrowdown']) dy+=1;
+    if(keys['a']||keys['arrowleft']) dx-=1;
+    if(keys['d']||keys['arrowright']) dx+=1;
 
-  function loop() {
-    let dx = 0, dy = 0;
+    if(moveX||moveY){ dx=moveX; dy=moveY; }
 
-    if (keys['w'] || keys['arrowup'])    dy -= 1;
-    if (keys['s'] || keys['arrowdown'])  dy += 1;
-    if (keys['a'] || keys['arrowleft'])  dx -= 1;
-    if (keys['d'] || keys['arrowright']) dx += 1;
-
-    if (moveX !== 0 || moveY !== 0) {
-      dx = moveX;
-      dy = moveY;
-    }
-
-    if (dx !== 0 || dy !== 0) {
-      const mag = Math.hypot(dx, dy);
-      if (mag > 0) {
-        x += (dx / mag) * speed * Math.max(mag, 0.3) * 1.5;
-        y += (dy / mag) * speed * Math.max(mag, 0.3) * 1.5;
+    if(dx||dy){
+      const m = Math.hypot(dx,dy);
+      if(m>0){
+        px += (dx/m) * speed * Math.max(0.35, m) * 1.4;
+        py += (dy/m) * speed * Math.max(0.35, m) * 1.4;
       }
     }
 
-    x = Math.max(40, Math.min(x, window.innerWidth - 100));
-    y = Math.max(80, Math.min(y, window.innerHeight - 120));
+    px = Math.max(50, Math.min(px, window.innerWidth-120));
+    py = Math.max(90, Math.min(py, window.innerHeight-140));
 
-    player.style.left = x + 'px';
-    player.style.top  = y + 'px';
+    player.style.left = px+'px';
+    player.style.top  = py+'px';
 
-    const dist = Math.hypot(x - tx, y - ty);
-    if (dist < 90 && !reached) {
-      reached = true;
+    const dist = Math.hypot(px-tx, py-ty);
+    if(dist < 100 && !activated){
+      activated = true;
       bg1.style.opacity = 0;
       bg2.style.opacity = 1;
-      cartaTexto.classList.add('visible');
+      carta.classList.add('visible');
     }
 
     requestAnimationFrame(loop);
   }
 
-  window.addEventListener('resize', () => {
-    tx = Math.random() * (window.innerWidth * 0.6) + window.innerWidth * 0.2;
-    ty = Math.random() * (window.innerHeight * 0.5) + window.innerHeight * 0.2;
-    target.style.left = tx + 'px';
-    target.style.top  = ty + 'px';
+  window.addEventListener('resize', ()=>{
+    tx = Math.random()*(window.innerWidth*0.6) + window.innerWidth*0.2;
+    ty = Math.random()*(window.innerHeight*0.55) + window.innerHeight*0.15;
+    target.style.left=tx+'px'; target.style.top=ty+'px';
   });
 
   loop();
